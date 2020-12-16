@@ -1,0 +1,31 @@
+applications:
+# Application
+- name: cosapi
+  instances: 1
+  memory: 128M
+  routes:
+    - route: cosapi-tc060765.cfapps.eu10.hana.ondemand.com
+  path: ./
+  buildpacks:
+    - nodejs_buildpack  
+  timeout: 180
+  services:
+    - xsuaa-service-tutorial
+
+# Application Router
+- name: approuter2
+  routes:
+    - route: approuter2-cosapi-tc060765.cfapps.eu10.hana.ondemand.com
+  path: approuter
+  buildpacks:
+    - nodejs_buildpack
+  memory: 128M
+  services:
+    - xsuaa-service-tutorial
+  env:
+    destinations: >
+      [
+        {"name":"inventory",
+         "url":"https://cosapi-tc060765.cfapps.eu10.hana.ondemand.com",
+         "forwardAuthToken": true}
+      ]

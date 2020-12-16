@@ -1,0 +1,29 @@
+{
+"xsappname": "cosapi",
+	"tenant-mode": "dedicated",
+	"scopes": [
+		{
+			"name": "$XSAPPNAME.inventory",
+			"description": "With this scope, USER can review inventory."
+		}
+	],
+
+	"role-templates": [
+		{
+			"name": "cosAPIinventory",
+			"description": "Role to get the current ivenntory levels",
+			"scope-references": [
+				"$XSAPPNAME.inventory"
+			]
+		}
+	],
+	"role-collections": [
+		{
+			"name": "cosAPI",
+			"description": "Inventory Values",
+			"role-template-references": [
+				"$XSAPPNAME.cosAPIinventory"
+			]
+		}
+	]
+}
