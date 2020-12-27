@@ -3,7 +3,7 @@ const app = express();
 const passport = require("passport");
 const { JWTStrategy } = require('@sap/xssec');
 const xsenv = require('@sap/xsenv');
-// Update data with product description and a catalog
+// Update data with product description and a catalog information
 const prod = require('./services/productList.js');
 var productList = prod.readProductList();
 // Required for calls to COS
