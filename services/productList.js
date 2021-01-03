@@ -2,7 +2,7 @@
 const fs = require('fs');
 var productListFile = '../LocalData/ProductList.json';
 
-// Read the local copy of the product List on start-up
+// Read the local copy of the product List on start-up or when changed
 function readProductList() {
     try { 
         var productList = require(productListFile);

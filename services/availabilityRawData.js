@@ -1,20 +1,51 @@
 const axios = require('axios');
 const qs = require('querystring');
-const data = { 'grant_type': 'client_credentials'};
-
-const options = {
-  method: 'POST',
-  headers: { 'content-type': 'application/x-www-form-urlencoded' },
-//  headers: { 'content-type': 'application/json' },
-  auth:{
-    username: 'sb-dd3064df-4097-411b-b32d-8cf83284e7fb!b59789|customer-order-sourcing-trial!b20218',
-    password: '36tXSJFZFL9WvpQEx0Xtcz8Tjzg=',
-  },
-  data: qs.stringify(data),
-//  data: data,
-  url: 'https://tc.authentication.eu10.hana.ondemand.com/oauth/token',
-}
+// Update data with product description and a catalog information
+const prod = require('./productList.js');
 
 // Make Call to get Data from COS (availabilityRawData)
+
+function makeCalltoGetData(authToken, sendRes) {
+  // Do we have an existing access Token ?
+  var accessToken = authToken.getAccessToken();
+  var baseURL = authToken.getBaseURL();
+  console.log('baseURL= ' + baseURL);
+  if (accessToken != null) {
+    availabilityRawData(accessToken, sendRes, baseURL);
+  } else {
+    // Make a call to get a new JWT to use in the call to get the data
+    var authPromise = axios.request(authToken.getJWToptions());
+    authPromise.then(function(res) {
+        authToken.setAuthToken(res.data);
+        console.log(`New JWT Access Token ${new Date()}`);
+        availabilityRawData(authToken.getAccessToken(), sendRes, baseURL);
+    }).catch(function(err) {
+        console.log("Error getting Access Token = " + err);
+    });    
+  }
+}
+// Get Response data, update and send back to the end-user
+function availabilityRawData(accessToken, sendRes, baseURL) {
+  const availabilityRawCallSettings = {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    baseURL: baseURL,
+    url: '/availabilityRawData',
+  }
+  //  console.log("in availability");
+    var getPromise = axios.request(availabilityRawCallSettings);
+    getPromise.then(function(resp) {
+    // Update the inventory response with product description and catalog
+    var productList = prod.readProductList();
+    if (productList != null) {prod.updateInventoryList(productList, resp.data)};
+    // Send the data back
+    sendRes.send(JSON.stringify(resp.data));
+    //console.log("availabilityCall response = " + JSON.stringify(data));
+  }).catch(function(err) {
+    console.log("Error getting availabilityRawData = " + err);
+  });
+}
+
+module.exports = {makeCalltoGetData, availabilityRawData};
 
 
