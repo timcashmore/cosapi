@@ -4,7 +4,8 @@
   "description": "Manage API Access to COS",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start_w": "$env:"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "@sap/xsenv": "^2.2.0",
     "@sap/xssec": "^3.0.10",
     "axios": "^0.21.0",
+    "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "multer": "^1.4.2",

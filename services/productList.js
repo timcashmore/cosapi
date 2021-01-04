@@ -2,9 +2,28 @@
 const fs = require('fs');
 var productListFile = '../LocalData/ProductList.json';
 
+var csvtojson = require('csvtojson');
+
 // Read the local copy of the product List on start-up or when changed
+
+var prodList = [];
+
+function readCSVProdList() {
+        // Read CSV file as a JSON object array
+        csvtojson().fromFile('./LocalData/prodFile.csv')
+        .then( list => {
+            prodList = list.slice();
+            prodList.forEach( item => {console.log(item.productId)});
+            console.log(`prodList Length = ${prodList.length}`);
+        }).catch(error => {
+            console.error(`Error reading file with ${error}`);
+        });  
+}
+
 function readProductList() {
+    prodList.forEach(prod => console.log(prod.productId));
     try { 
+        // Read JSON File of Product Description and Catalog
         var productList = require(productListFile);
         console.log(`ProductList File ${productListFile} successfully Read`);
         return productList;
@@ -13,11 +32,14 @@ function readProductList() {
         return null;
     }
 }
+
 // Function to update the availability data with additional information
 function updateInventoryList(productList, inventoryList) {
-    console.log("Updating Description in Inventory List");
+    console.log("Updating Description in Inventory List " + prodList.length);
+//    prodList.forEach(item =>{console.log(item.productId)});
     inventoryList.items.forEach( ( inven, i ) => {
-            productList.items.some( ( prod ) => {
+//            productList.items.some( ( prod ) => {
+              prodList.some( prod => {
                 if ( inven.productId == prod.productId ) {
                    inven.description = prod.description;
                    inven.catalog = prod.catalog;
@@ -36,6 +58,6 @@ function updateLocalFile(file, jsonString) {
     }
 } 
 
-module.exports = {readProductList, updateInventoryList, updateLocalFile, productListFile};
+module.exports = {readProductList, updateInventoryList, updateLocalFile, productListFile, readCSVProdList};
 
 

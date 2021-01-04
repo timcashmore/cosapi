@@ -5,10 +5,16 @@ const { JWTStrategy } = require('@sap/xssec');
 const xsenv = require('@sap/xsenv');
 // AvailabilityRawData Processing
 const inventory = require('./services/availabilityRawData');
+
 // Used for authorisation
 const AuthToken = require('./services/oAuthTokenClass.js');
+
+// Used to load up product descriptions
+const prod = require('./services/productList.js');
+prod.readCSVProdList();   // Store latest product descriptions in an array on start-up
+
 //Used for local testing - pass it on the commenad line
-const local = process.env.LOCAL == 'true' ? true : false;
+const local = process.env.START_LOCAL == 'true' ? true : false;
 
 // Set up a new object to capture the accsss token to COS
 var authToken = new AuthToken(5);
@@ -37,11 +43,13 @@ var storage = multer.diskStorage({
   }
 })
  
-var upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 
 //app.post('/api/produpload', checkInventoryScope, upload.single('prodFile.csv'), (req, res) => {
 app.post('/api/produpload', checkInventoryScope, upload.single('prodFile'), (req, res) => {
+  // Process Updated file and make it available in memory for processing
   console.log('api/produpload' + req.file);
+  prod.readCSVProdList();   // Store latest product descriptions when a new file is received
   res.send("Hello");
 }); 
 

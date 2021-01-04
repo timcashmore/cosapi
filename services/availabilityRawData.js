@@ -33,8 +33,8 @@ function availabilityRawData(accessToken, sendRes, baseURL) {
     url: '/availabilityRawData',
   }
   //  console.log("in availability");
-    var getPromise = axios.request(availabilityRawCallSettings);
-    getPromise.then(function(resp) {
+    var invenPromise = axios.request(availabilityRawCallSettings);
+    invenPromise.then(function(resp) {
     // Update the inventory response with product description and catalog
     var productList = prod.readProductList();
     if (productList != null) {prod.updateInventoryList(productList, resp.data)};
