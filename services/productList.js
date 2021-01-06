@@ -1,6 +1,6 @@
 
 const fs = require('fs');
-var productListFile = '../LocalData/ProductList.json';
+//var productListFile = '../LocalData/ProductList.json';
 
 var csvtojson = require('csvtojson');
 
@@ -20,7 +20,7 @@ function readCSVProdList() {
         });  
 }
 
-function readProductList() {
+/*function readProductList() {
     prodList.forEach(prod => console.log(prod.productId));
     try { 
         // Read JSON File of Product Description and Catalog
@@ -31,13 +31,14 @@ function readProductList() {
         console.error(`Error reading file ${productListFile} with ${error}`);
         return null;
     }
-}
+}*/
 
 // Function to update the availability data with additional information
-function updateInventoryList(productList, inventoryList) {
+function updateInventoryList(inventoryList) {
     console.log("Updating Description in Inventory List " + prodList.length);
 //    prodList.forEach(item =>{console.log(item.productId)});
-    inventoryList.items.forEach( ( inven, i ) => {
+    if(prodList.length > 0 ) {
+        inventoryList.items.forEach( ( inven, i ) => {
 //            productList.items.some( ( prod ) => {
               prodList.some( prod => {
                 if ( inven.productId == prod.productId ) {
@@ -47,6 +48,7 @@ function updateInventoryList(productList, inventoryList) {
                  }
             });
         } );
+    }
 }
 // Function to write JSON data to a local file
 function updateLocalFile(file, jsonString) {
@@ -58,6 +60,6 @@ function updateLocalFile(file, jsonString) {
     }
 } 
 
-module.exports = {readProductList, updateInventoryList, updateLocalFile, productListFile, readCSVProdList};
+module.exports = {updateInventoryList, updateLocalFile, readCSVProdList};
 
 

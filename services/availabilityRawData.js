@@ -36,8 +36,9 @@ function availabilityRawData(accessToken, sendRes, baseURL) {
     var invenPromise = axios.request(availabilityRawCallSettings);
     invenPromise.then(function(resp) {
     // Update the inventory response with product description and catalog
-    var productList = prod.readProductList();
-    if (productList != null) {prod.updateInventoryList(productList, resp.data)};
+    //var productList = prod.readProductList();
+    //if (productList != null) {prod.updateInventoryList(productList, resp.data)};
+    prod.updateInventoryList(resp.data)
     // Send the data back
     sendRes.send(JSON.stringify(resp.data));
     //console.log("availabilityCall response = " + JSON.stringify(data));

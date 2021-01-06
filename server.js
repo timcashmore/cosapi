@@ -30,8 +30,9 @@ if (!local) {
 app.get('/api/inventory', checkInventoryScope, (req, res) => {
    inventory.makeCalltoGetData(authToken, res);  
 });
+
 // Define route to receive and update product list file from a csv
-var multer = require('multer');
+const multer = require('multer');
 //var upload = multer({ dest: './LocalData/' })
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -42,17 +43,19 @@ var storage = multer.diskStorage({
       cb(null, 'prodFile.csv');
   }
 })
- 
 const upload = multer({ storage: storage });
 
-//app.post('/api/produpload', checkInventoryScope, upload.single('prodFile.csv'), (req, res) => {
 app.post('/api/produpload', checkInventoryScope, upload.single('prodFile'), (req, res) => {
   // Process Updated file and make it available in memory for processing
-  console.log('api/produpload' + req.file);
+  console.log('POST api/produpload' + req.file);
   prod.readCSVProdList();   // Store latest product descriptions when a new file is received
-  res.send("Hello");
+  res.send('File Upload Response')
 }); 
-
+// Needed for a CSRF token request
+app.get('/api/produpload', checkInventoryScope, (req, res) => {
+  console.log('GET api/produpload');
+  res.send('Token Response')
+});
 
 // Listen on Port
 const port = process.env.PORT || 3000;
