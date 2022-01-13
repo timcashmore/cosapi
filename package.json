@@ -1,5 +1,5 @@
 {
-  "name": "cosapi",
+  "name": "timc_cosapi",
   "version": "1.0.0",
   "description": "Manage API Access to COS",
   "main": "server.js",
